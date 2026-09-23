@@ -105,8 +105,8 @@
           <label>Customer / machine / OEM <span class="optional">optional</span><input id="qMachine" placeholder="Machine or equipment"></label>
           <label>Outcome / evidence<textarea id="qOutcome" rows="3" placeholder="What happened? Service life? Any lessons?"></textarea></label>
         </div>
-        <label>Photo<input id="appPhoto" type="file" accept="image/*" capture="environment"></label>
-        <div id="photoPreview" class="photo-preview hidden"></div>
+        <label>Application photos <span class="optional">up to 10 photos · each can have a caption</span><input id="appPhoto" type="file" accept="image/*" capture="environment" multiple></label>
+        <div id="photoPreview" class="photo-preview-grid hidden"></div>
         <label>Recorded by<input id="appAuthor" placeholder="Employee name"></label>
         <button class="primary wide" type="submit">Save Application</button>
       </form>
@@ -128,6 +128,18 @@
       </div>
     </section>
   </main>
+
+  <div id="linkModal" class="modal-backdrop hidden">
+    <div class="modal">
+      <div class="modal-head">
+        <div><p class="eyebrow">BUILD PORTFOLIO</p><h2>Link Applications</h2><p>Select applications from the library to include in this application's portfolio report.</p></div>
+        <button class="modal-close" id="closeLinkModal">×</button>
+      </div>
+      <input id="linkSearch" class="modal-search" placeholder="Search applications…">
+      <div id="linkList" class="link-list"></div>
+      <div class="modal-footer"><span id="linkCount">0 selected</span><button class="primary" id="saveLinks">Save links</button></div>
+    </div>
+  </div>
 
   <nav class="bottom-nav">
     <button class="nav-item active" data-page="home"><span>⌂</span>Home</button>

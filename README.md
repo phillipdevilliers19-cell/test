@@ -39,3 +39,8 @@ For a true shared multi-user database, the next version can connect this interfa
 ## Engineering note
 
 The bearing calculations are based on published Vesconite design guidance where formulas are available. The freezer calculator is an engineering estimate using a lumped thermal model and must be validated against actual installation trials before being used as a production instruction.
+
+
+## Portfolio linking
+
+Open any application, choose **Link applications**, select related records, and save. **Export / Print PDF** then creates a combined A4 application portfolio with a cover page and one section per linked application.
