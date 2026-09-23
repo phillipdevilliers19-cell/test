@@ -132,9 +132,26 @@
         <div><p class="eyebrow">CLIENT PORTFOLIO</p><h2>Build Export Portfolio</h2><p>Select the applications you want included in this PDF. Nothing is permanently linked or changed.</p></div>
         <button class="modal-close" id="closeLinkModal">×</button>
       </div>
-      <input id="linkSearch" class="modal-search" placeholder="Search applications…">
+      <div class="portfolio-filter-row">
+        <input id="linkSearch" class="modal-search" placeholder="Search applications…">
+        <select id="linkIndustryFilter" class="modal-filter"><option value="">All categories</option></select>
+      </div>
       <div id="linkList" class="link-list"></div>
-      <div class="modal-footer"><span id="linkCount">0 selected</span><div style="display:flex;gap:8px"><button class="secondary" id="cancelPortfolio">Cancel</button><button class="primary" id="saveLinks">Export PDF</button></div></div>
+      <div class="modal-footer"><span id="linkCount">0 selected</span><div style="display:flex;gap:8px"><button class="secondary" id="cancelPortfolio">Cancel</button><button class="primary" id="saveLinks">Preview Portfolio</button></div></div>
+    </div>
+  </div>
+
+  <div id="portfolioEditorModal" class="modal-backdrop hidden">
+    <div class="editor-modal">
+      <div class="editor-topbar">
+        <div><p class="eyebrow">CLIENT PORTFOLIO</p><h2>Preview & Edit</h2><p>Everything here is a temporary portfolio draft. Editing it will not change the original applications.</p></div>
+        <button class="modal-close" id="closeEditorModal">×</button>
+      </div>
+      <div class="editor-actions">
+        <span id="editorStatus">Draft — original application records are untouched</span>
+        <div><button class="secondary" id="backToPortfolio">← Applications</button><button class="primary" id="generatePortfolioPdf">Generate PDF</button></div>
+      </div>
+      <div id="portfolioEditor" class="portfolio-editor"></div>
     </div>
   </div>
 
