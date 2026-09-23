@@ -85,25 +85,18 @@ $("#appForm").onsubmit=e=>{
   e.preventDefault();
   const newInd=$("#newIndustry").value.trim(), ind=newInd||$("#appIndustry").value;
   if(newInd){saveIndustries([...getIndustries(),newInd]);fillIndustrySelects();$("#appIndustry").value=newInd}
-  const app={id:crypto.randomUUID(),date:new Date().toISOString(),name:$("#appName").value.trim(),industry:ind,product:$("#appProduct").value.trim(),description:$("#appDescription").value.trim(),original:$("#qOriginal").value.trim(),why:$("#qWhy").value.trim(),environment:$("#qEnvironment").value.trim(),load:$("#qLoad").value.trim(),temperature:$("#qTemp").value.trim(),lubrication:$("#qLubrication").value.trim(),machine:$("#qMachine").value.trim(),outcome:$("#qOutcome").value.trim(),author:$("#appAuthor").value.trim(),photos:pendingPhotos,photo:pendingPhotos[0]?.src||"",linkedIds:[]};
+  const app={id:crypto.randomUUID(),date:new Date().toISOString(),name:$("#appName").value.trim(),industry:ind,product:$("#appProduct").value.trim(),description:$("#appDescription").value.trim(),original:$("#qOriginal").value.trim(),why:$("#qWhy").value.trim(),environment:$("#qEnvironment").value.trim(),load:$("#qLoad").value.trim(),temperature:$("#qTemp").value.trim(),lubrication:$("#qLubrication").value.trim(),machine:$("#qMachine").value.trim(),outcome:$("#qOutcome").value.trim(),author:$("#appAuthor").value.trim(),photos:pendingPhotos,photo:pendingPhotos[0]?.src||""};
   const apps=getApps();apps.push(app);saveApps(apps);e.target.reset();pendingPhotos=[];renderPendingPhotos();showPage("library");
 };
 function openDetail(id){
   const a=getApps().find(x=>x.id===id);if(!a)return;
-  const linked=(a.linkedIds||[]).map(x=>getApps().find(y=>y.id===x)).filter(Boolean);
   const photos=photosOf(a);
   const gallery=photos.length?`<div class="application-gallery">${photos.map((p,i)=>`<figure><img src="${p.src}" alt="${esc(p.caption||a.name)}"><figcaption><span>PHOTO ${i+1}</span>${esc(p.caption||"No caption recorded")}</figcaption></figure>`).join("")}</div>`:'<div class="empty">No photos recorded</div>';
   $("#appDetail").innerHTML=`
   <div class="detail-hero"><div class="detail-photo-wrap">${gallery}</div>
   <div class="detail-copy"><span class="tag">${esc(a.industry)}</span><h1>${esc(a.name)}</h1><p>${esc(a.description)}</p><p><strong>Product:</strong> ${esc(a.product||"Not recorded")}</p><p><strong>Recorded:</strong> ${new Date(a.date).toLocaleString()}${a.author?" · "+esc(a.author):""}</p>
-  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
-    <button class="primary" onclick="openLinkModal('${a.id}')">🔗 Link applications</button>
-    <button class="primary" onclick="exportApplicationReport('${a.id}')">Export / Print PDF</button>
-    <button class="danger" onclick="deleteApp('${a.id}')">Delete record</button>
-  </div></div></div>
-  <div class="portfolio-strip"><strong>Application portfolio</strong><p>This report currently contains this application${linked.length?` plus ${linked.length} linked application${linked.length===1?"":"s"}.`:" only. Link related applications to build a customer/application portfolio."}</p>
-    <div class="linked-chips">${linked.length?linked.map(x=>`<span class="linked-chip">${esc(x.name)} <button class="chip-x" title="Unlink" onclick="event.stopPropagation();unlinkApplication('${a.id}','${x.id}')">×</button></span>`).join(""):'<span class="pill">No linked applications</span>'}</div>
-  </div>
+  <div class="export-callout"><div><strong>Client-ready portfolio</strong><p>Select this application plus any other relevant applications and export a polished PDF. Your selection is temporary and will not permanently link the records.</p></div><button class="primary" onclick="openLinkModal('${a.id}')">Export PDF</button></div>
+  <button class="danger" onclick="deleteApp('${a.id}')">Delete record</button></div></div>
   <div class="detail-grid">
    ${detailBox("Original material",a.original)}${detailBox("Why Vesconite?",a.why)}${detailBox("Environment",a.environment)}${detailBox("Load / movement / speed",a.load)}${detailBox("Temperature",a.temperature)}${detailBox("Lubrication",a.lubrication)}${detailBox("Machine / OEM",a.machine)}${detailBox("Outcome / evidence",a.outcome)}
   </div>`;
@@ -114,8 +107,7 @@ let linkBaseId=null;
 let linkSelection=new Set();
 window.openLinkModal=function(id){
   linkBaseId=id;
-  const base=getApps().find(a=>a.id===id); if(!base)return;
-  linkSelection=new Set(base.linkedIds||[]);
+  linkSelection=new Set([id]);
   $("#linkSearch").value="";
   renderLinkList();
   $("#linkModal").classList.remove("hidden");
@@ -123,12 +115,12 @@ window.openLinkModal=function(id){
 function closeLinkModal(){ $("#linkModal").classList.add("hidden"); linkBaseId=null; linkSelection=new Set(); }
 function renderLinkList(){
   const q=($("#linkSearch").value||"").toLowerCase();
-  const apps=getApps().filter(a=>a.id!==linkBaseId&&(!q||JSON.stringify(a).toLowerCase().includes(q)));
+  const apps=getApps().filter(a=>!q||JSON.stringify(a).toLowerCase().includes(q));
   $("#linkList").innerHTML=apps.length?apps.map(a=>`
     <label class="link-row"><input type="checkbox" data-link-id="${esc(a.id)}" ${linkSelection.has(a.id)?"checked":""}>
       <span class="link-thumb">${photosOf(a)[0]?`<img src="${photosOf(a)[0].src}" alt="">`:"▣"}</span>
       <span class="link-copy"><strong>${esc(a.name)}</strong><small>${esc(a.industry)}${a.product?" · "+esc(a.product):""}</small></span>
-    </label>`).join(""):'<div class="empty">No other applications found.</div>';
+    </label>`).join(""):'<div class="empty">No applications found.</div>';
   $("#linkCount").textContent=`${linkSelection.size} selected`;
   $$("#linkList input[data-link-id]").forEach(cb=>cb.onchange=()=>{
     cb.checked?linkSelection.add(cb.dataset.linkId):linkSelection.delete(cb.dataset.linkId);
@@ -137,17 +129,14 @@ function renderLinkList(){
 }
 $("#linkSearch").oninput=renderLinkList;
 $("#closeLinkModal").onclick=closeLinkModal;
+$("#cancelPortfolio").onclick=closeLinkModal;
 $("#linkModal").addEventListener("click",e=>{if(e.target.id==="linkModal")closeLinkModal()});
 $("#saveLinks").onclick=()=>{
   if(!linkBaseId)return;
-  const apps=getApps(), base=apps.find(a=>a.id===linkBaseId); if(!base)return;
-  base.linkedIds=[...linkSelection];
-  saveApps(apps); closeLinkModal(); openDetail(base.id);
-};
-window.unlinkApplication=function(baseId,linkedId){
-  const apps=getApps(), base=apps.find(a=>a.id===baseId); if(!base)return;
-  base.linkedIds=(base.linkedIds||[]).filter(id=>id!==linkedId);
-  saveApps(apps); openDetail(baseId);
+  const selected=[...linkSelection];
+  const base=linkBaseId;
+  closeLinkModal();
+  exportApplicationReport(base,selected);
 };
 
 function detailBox(t,v){return `<div class="detail-box"><strong>${t}</strong><p>${esc(v||"Not recorded")}</p></div>`}
@@ -155,6 +144,7 @@ window.deleteApp=id=>{if(confirm("Delete this application record?")){saveApps(ge
 fillIndustrySelects();updateStats();renderLibrary();
 
 function openCalc(type){
+  return;
   showPage("calculator-view");
   const templates={
     general:{title:"General Bearing Calculator",sub:"Preliminary bearing sizing, load, speed, PV and fit calculations.",form:generalForm},
@@ -357,22 +347,28 @@ function calculateFreezer(){
 
 function formatTime(min){if(!Number.isFinite(min)||min<=0)return"Not achievable";if(min<60)return `${Math.ceil(min)} min`;const h=Math.floor(min/60),m=Math.ceil(min%60);return `${h} h ${m?m+" min":""}`}
 
-function exportApplicationReport(id){
+function exportApplicationReport(id, selectedIds=[]){
  const apps=getApps(), primary=apps.find(x=>x.id===id); if(!primary)return;
- const portfolio=[primary,...(primary.linkedIds||[]).map(x=>apps.find(y=>y.id===x)).filter(Boolean)];
+ const ids=[id,...selectedIds.filter(x=>x!==id)];
+ const portfolio=ids.map(x=>apps.find(y=>y.id===x)).filter(Boolean);
  const escR=esc, portfolioCount=portfolio.length;
- const sectionHtml=a=>{
+ const sectionHtml=(a,index)=>{
    const sections=[["Product / material",a.product],["Original material",a.original],["Why Vesconite was selected",a.why],["Operating environment",a.environment],["Load / movement / speed",a.load],["Temperature",a.temperature],["Lubrication",a.lubrication],["Machine / OEM",a.machine],["Outcome / evidence",a.outcome]];
-   return `<article class="application"><div class="app-head"><div><div class="app-num">APPLICATION ${portfolio.indexOf(a)+1} OF ${portfolioCount}</div><h2>${escR(a.name)}</h2><div class="meta">${escR(a.industry)} · ${escR(a.product||"Product not recorded")} · Recorded ${new Date(a.date).toLocaleString()}${a.author?" · "+escR(a.author):""}</div></div><div class="tag">${escR(a.industry)}</div></div>${photosOf(a).map((p,i)=>`<figure class="report-photo"><img class="photo" src="${p.src}" alt="Application photo ${i+1}"><figcaption><strong>Photo ${i+1}</strong>${escR(p.caption||"")}</figcaption></figure>`).join("")}<p class="lead">${escR(a.description||"")}</p><div class="grid">${sections.map(([t,v])=>`<div class="box"><strong>${escR(t)}</strong><p>${escR(v||"Not recorded")}</p></div>`).join("")}</div></article>`;
+   const photos=photosOf(a);
+   return `<article class="application"><div class="app-head"><div><div class="app-num">APPLICATION ${index+1} OF ${portfolioCount}</div><h2>${escR(a.name)}</h2><div class="meta">${escR(a.industry)} · ${escR(a.product||"Product not recorded")} · Recorded ${new Date(a.date).toLocaleDateString()}${a.author?" · "+escR(a.author):""}</div></div><div class="tag">${escR(a.industry)}</div></div><p class="lead">${escR(a.description||"")}</p>${photos.map((p,i)=>`<figure class="report-photo"><img class="photo" src="${p.src}" alt="Application photo ${i+1}"><figcaption><strong>Photo ${i+1}</strong>${escR(p.caption||"")}</figcaption></figure>`).join("")}<div class="grid">${sections.map(([t,v])=>`<div class="box"><strong>${escR(t)}</strong><p>${escR(v||"Not recorded")}</p></div>`).join("")}</div></article>`;
  };
- const win=window.open("","_blank","noopener,noreferrer");
- if(!win){alert("Please allow pop-ups for AVA Internal to export the report.");return}
- win.document.write(`<!doctype html><html><head><title>AVA Application Portfolio - ${escR(primary.name)}</title><style>
- @page{size:A4;margin:15mm}*{box-sizing:border-box}body{font-family:Arial,Helvetica,sans-serif;color:#17242b;margin:0}h1{font-size:38px;margin:7px 0}h2{font-size:21px;margin:4px 0 6px}p{font-size:10.5pt;line-height:1.5;margin:5px 0}.eyebrow,.app-num{font-size:8.5pt;color:#167d6b;font-weight:bold;letter-spacing:1.6px}.meta{color:#5d6b72;font-size:9.5pt}.tag{display:inline-block;padding:5px 9px;border-radius:20px;background:#e5f5f1;color:#146d5e;font-size:8.5pt;font-weight:bold}.cover{padding:25mm 0 20mm;min-height:240mm;display:flex;flex-direction:column;justify-content:center}.cover p{font-size:13pt;color:#5d6b72;max-width:150mm}.summary{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}.summary .box{background:#f3f8f7}.box{border:1px solid #d7e0e3;border-radius:8px;padding:10px;break-inside:avoid}.box strong{display:block;font-size:8.5pt;color:#167d6b;text-transform:uppercase;margin-bottom:4px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.photo{max-width:100%;max-height:270px;object-fit:contain;border:1px solid #ddd;border-radius:8px;margin:9px 0 4px}.report-photo{margin:8px 0 14px}.report-photo figcaption{font-size:9pt;color:#5d6b72;margin-top:3px}.report-photo figcaption strong{color:#167d6b;margin-right:7px}.application{break-before:page}.application:first-of-type{break-before:auto}.app-head{display:flex;justify-content:space-between;gap:15px;border-bottom:1px solid #d7e0e3;padding-bottom:12px;margin-bottom:14px}.lead{font-size:11pt}.footer{margin-top:26px;padding-top:10px;border-top:1px solid #ddd;color:#7b888d;font-size:8pt}@media print{.application{break-before:page}}</style></head><body>
- <section class="cover"><div class="eyebrow">AVA INTERNAL · VESCONITE ENGINEERING</div><h1>Application Portfolio</h1><h2>${escR(primary.name)}</h2><p>Portfolio of ${portfolioCount} linked application${portfolioCount===1?"":"s"} from the AVA Internal Application Library.</p><div class="summary"><div class="box"><strong>Primary application</strong><p>${escR(primary.name)}</p></div><div class="box"><strong>Industry</strong><p>${escR(primary.industry)}</p></div><div class="box"><strong>Applications included</strong><p>${portfolioCount}</p></div><div class="box"><strong>Generated</strong><p>${new Date().toLocaleString()}</p></div></div><div class="footer">Internal engineering knowledge portfolio. Verify application-specific design requirements before production use.</div></section>
- ${portfolio.map(sectionHtml).join("")}
- <script>window.onload=()=>setTimeout(()=>window.print(),400)<\/script></body></html>`);
- win.document.close();
+ const coverPhotos=photosOf(primary);
+ const coverImage=coverPhotos[0]?`<img class="cover-image" src="${coverPhotos[0].src}" alt="">`:"";
+ const html=`<!doctype html><html><head><meta charset="utf-8"><title>AVA Application Portfolio - ${escR(primary.name)}</title><style>
+ @page{size:A4;margin:13mm}*{box-sizing:border-box}body{font-family:Arial,Helvetica,sans-serif;color:#17242b;margin:0}h1{font-size:38px;line-height:1.05;margin:7px 0}h2{font-size:21px;margin:4px 0 6px}p{font-size:10.5pt;line-height:1.5;margin:5px 0}.eyebrow,.app-num{font-size:8.5pt;color:#167d6b;font-weight:bold;letter-spacing:1.6px}.meta{color:#5d6b72;font-size:9.5pt}.tag{display:inline-block;padding:5px 9px;border-radius:20px;background:#e5f5f1;color:#146d5e;font-size:8.5pt;font-weight:bold}.cover{padding:8mm 0 15mm;min-height:245mm;display:flex;flex-direction:column;justify-content:center}.cover p{font-size:13pt;color:#5d6b72;max-width:155mm}.cover-image{display:block;width:100%;max-height:95mm;object-fit:cover;border-radius:9px;margin:18px 0}.summary{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}.summary .box{background:#f3f8f7}.box{border:1px solid #d7e0e3;border-radius:8px;padding:10px;break-inside:avoid}.box strong{display:block;font-size:8.5pt;color:#167d6b;text-transform:uppercase;margin-bottom:4px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.photo{width:100%;max-height:270px;object-fit:contain;border:1px solid #ddd;border-radius:8px;margin:9px 0 4px;background:#f7f9f9}.report-photo{margin:12px 0 16px;break-inside:avoid}.report-photo figcaption{font-size:9pt;color:#5d6b72;margin-top:3px}.report-photo figcaption strong{color:#167d6b;margin-right:7px}.application{break-before:page}.application:first-of-type{break-before:auto}.app-head{display:flex;justify-content:space-between;gap:15px;border-bottom:1px solid #d7e0e3;padding-bottom:12px;margin-bottom:14px}.lead{font-size:11pt}.footer{margin-top:26px;padding-top:10px;border-top:1px solid #ddd;color:#7b888d;font-size:8pt}@media print{.application{break-before:page}}
+ </style></head><body><section class="cover"><div class="eyebrow">AVA INTERNAL · VESCONITE ENGINEERING</div><h1>Application Portfolio</h1><h2>${escR(primary.name)}</h2><p>A selected portfolio of real-world applications from the AVA Internal Application Database.</p>${coverImage}<div class="summary"><div class="box"><strong>Primary application</strong><p>${escR(primary.name)}</p></div><div class="box"><strong>Industry</strong><p>${escR(primary.industry)}</p></div><div class="box"><strong>Applications included</strong><p>${portfolioCount}</p></div><div class="box"><strong>Generated</strong><p>${new Date().toLocaleDateString()}</p></div></div><div class="footer">Prepared from the AVA Internal application database. Application-specific engineering verification remains the responsibility of the relevant project team.</div></section>${portfolio.map(sectionHtml).join("")}</body></html>`;
+ // Blob URLs avoid the blank popup/document.write failure seen in some browsers.
+ const blob=new Blob([html],{type:"text/html;charset=utf-8"});
+ const url=URL.createObjectURL(blob);
+ const win=window.open(url,"_blank");
+ if(!win){URL.revokeObjectURL(url);alert("Please allow pop-ups for AVA Internal to export the PDF.");return;}
+ setTimeout(()=>{try{win.focus();win.print()}catch{}},900);
+ setTimeout(()=>URL.revokeObjectURL(url),120000);
 }
 
 $("#exportData").onclick=()=>{

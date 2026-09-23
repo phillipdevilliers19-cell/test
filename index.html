@@ -27,37 +27,34 @@
       <div class="hero">
         <div>
           <p class="eyebrow">VESCONITE ENGINEERING</p>
-          <h1>Tools that put the answer<br><em>in your hands.</em></h1>
-          <p class="hero-copy">Bearing design, application knowledge and practical engineering calculators — built for internal use.</p>
+          <h1>Real applications.<br><em>Real engineering evidence.</em></h1>
+          <p class="hero-copy">A high-profile library of real-world applications, engineering evidence and customer success stories — built to turn field knowledge into powerful client-facing material.</p>
         </div>
         <div class="hero-orbit"><span>AVA</span></div>
       </div>
 
-      <div class="quick-grid">
-        <button class="quick-card accent" data-page="calculators">
-          <span class="q-icon">◈</span><strong>Calculators</strong><small>Design & engineering</small><b>→</b>
-        </button>
-        <button class="quick-card" data-page="library">
-          <span class="q-icon">▣</span><strong>Application Library</strong><small>Build our knowledge base</small><b>→</b>
-        </button>
-        <button class="quick-card" data-page="freezer">
-          <span class="q-icon">❄</span><strong>Freezer Fit</strong><small>Cooling time estimator</small><b>→</b>
+      <div class="database-hero-grid">
+        <button class="quick-card accent" data-page="library">
+          <span class="q-icon">▣</span><strong>Application Database</strong><small>Search our field-proven applications</small><b>→</b>
         </button>
         <button class="quick-card" data-page="add-app">
-          <span class="q-icon">＋</span><strong>Add Application</strong><small>Capture a field application</small><b>→</b>
+          <span class="q-icon">＋</span><strong>Capture Application</strong><small>Add a new customer success story</small><b>→</b>
         </button>
       </div>
-
       <div class="section-head"><div><span class="eyebrow">AT A GLANCE</span><h2>Internal knowledge</h2></div></div>
       <div class="stats">
         <div class="stat"><span id="appCount">0</span><small>Applications saved</small></div>
         <div class="stat"><span id="industryCount">0</span><small>Industries</small></div>
         <div class="stat"><span id="photoCount">0</span><small>Photos captured</small></div>
       </div>
-      <div class="notice"><span>i</span><div><strong>Internal tool</strong><p>Application records are stored in this browser. Use Backup / Restore to move the library between devices.</p></div></div>
+      <div class="database-intro">
+        <div><span class="eyebrow">THE PURPOSE OF AVA</span><h2>Build a database worth showing to customers.</h2><p>Capture the machine, problem, material, environment, installation and outcome. Then turn a selection of proven applications into a polished, client-ready portfolio in one click.</p></div>
+        <div class="database-points"><span>01 · Evidence over claims</span><span>02 · Photos tell the story</span><span>03 · Export meaningful portfolios</span></div>
+      </div>
+      <div class="notice"><span>i</span><div><strong>Internal application database</strong><p>Records are stored in this browser. Use Backup / Restore to move the library between devices. Portfolio selections are temporary and are not saved to the application record.</p></div></div>
     </section>
 
-    <section id="calculators" class="page">
+    <section id="calculators" class="page hidden-tool">
       <div class="page-title"><p class="eyebrow">ENGINEERING TOOLS</p><h1>Calculators</h1><p>Metric-first calculators based on Vesconite's published design guidance.</p></div>
       <div class="calc-grid">
         <button class="calc-card" data-calc="general"><span>◉</span><div><strong>General Bearing</strong><small>Size, load, speed, PV & fits</small></div><b>→</b></button>
@@ -69,12 +66,12 @@
       <div class="formula-note"><strong>Engineering note</strong><p>These tools are intended for internal preliminary design and application assessment. Where the published Vesconite calculator uses proprietary or unpublished logic, AVA labels the result as an estimate rather than presenting it as an exact reproduction.</p></div>
     </section>
 
-    <section id="calculator-view" class="page">
+    <section id="calculator-view" class="page hidden-tool">
       <button class="back" data-page="calculators">← Calculators</button>
       <div id="calcContent"></div>
     </section>
 
-    <section id="freezer" class="page">
+    <section id="freezer" class="page hidden-tool">
       <button class="back" data-page="calculators">← Calculators</button>
       <div id="freezerContent"></div>
     </section>
@@ -132,18 +129,17 @@
   <div id="linkModal" class="modal-backdrop hidden">
     <div class="modal">
       <div class="modal-head">
-        <div><p class="eyebrow">BUILD PORTFOLIO</p><h2>Link Applications</h2><p>Select applications from the library to include in this application's portfolio report.</p></div>
+        <div><p class="eyebrow">CLIENT PORTFOLIO</p><h2>Build Export Portfolio</h2><p>Select the applications you want included in this PDF. Nothing is permanently linked or changed.</p></div>
         <button class="modal-close" id="closeLinkModal">×</button>
       </div>
       <input id="linkSearch" class="modal-search" placeholder="Search applications…">
       <div id="linkList" class="link-list"></div>
-      <div class="modal-footer"><span id="linkCount">0 selected</span><button class="primary" id="saveLinks">Save links</button></div>
+      <div class="modal-footer"><span id="linkCount">0 selected</span><div style="display:flex;gap:8px"><button class="secondary" id="cancelPortfolio">Cancel</button><button class="primary" id="saveLinks">Export PDF</button></div></div>
     </div>
   </div>
 
   <nav class="bottom-nav">
     <button class="nav-item active" data-page="home"><span>⌂</span>Home</button>
-    <button class="nav-item" data-page="calculators"><span>◈</span>Tools</button>
     <button class="nav-item" data-page="library"><span>▣</span>Library</button>
     <button class="nav-item" data-page="add-app"><span>＋</span>Add</button>
   </nav>
