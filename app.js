@@ -406,78 +406,134 @@ function calculateFreezer(){
 (function initPumpEasterEgg(){
   const fx=document.getElementById("avaPumpFx");
   if(!fx || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const svg=document.getElementById("pumpSvg"), shaft=document.getElementById("shaftGroup"), arrow=document.getElementById("launchArrow");
-  const bowl=document.getElementById("bowlGroup"), left=document.getElementById("bowlLeft"), right=document.getElementById("bowlRight");
-  const top=document.getElementById("topView"), glow=document.getElementById("fxGlow"), label=document.getElementById("fxLabel"), bar=document.getElementById("fxProgressBar");
+  const svg=document.getElementById("pumpSvg");
+  const shaft=document.getElementById("shaftGroup");
+  const arrow=document.getElementById("launchArrow");
+  const bowl=document.getElementById("bowlGroup");
+  const left=document.getElementById("bowlLeft");
+  const right=document.getElementById("bowlRight");
+  const shaftFinal=document.getElementById("shaftFinal");
+  const top=document.getElementById("topView");
+  const glow=document.getElementById("fxGlow");
+  const labels=document.getElementById("assemblyLabels");
+  const hint=document.getElementById("fxHint");
+  const bar=document.getElementById("fxProgressBar");
+  const topHighlight=document.getElementById("topShaftHighlight");
+  const topGrooves=document.getElementById("topGrooves");
+  const topKey=document.getElementById("topKey");
+
   let startY=0,pull=0,holding=false,armed=false,holdTimer=null,running=false,raf=0;
   const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
   const lerp=(a,b,t)=>a+(b-a)*t;
-  const setPull=v=>{
+
+  function setPull(v){
     pull=clamp(v,0,190);
     fx.classList.add("active");
     const p=pull/190;
-    shaft.setAttribute("transform",`translate(0 ${lerp(-260,-15,p)})`);
-    arrow.setAttribute("opacity",String(Math.max(0,(p-.25)/.35)));
+    shaft.setAttribute("transform",`translate(0 ${lerp(-285,-18,p)})`);
+    arrow.setAttribute("opacity",String(Math.max(0,(p-.18)/.48)));
     bar.style.width=`${Math.round(p*100)}%`;
-  };
-  const reset=()=>{
-    cancelAnimationFrame(raf);clearTimeout(holdTimer);running=false;holding=false;armed=false;pull=0;
+    hint.textContent=p>.65?"HOLD… RELEASE":"PULL DOWN & HOLD";
+  }
+
+  function setBowlPositions(x){
+    // Left half enters from left. Right half mirrors the exact same geometry from right.
+    left.setAttribute("transform",`translate(${x} 0)`);
+    right.setAttribute("transform",`translate(${376-x} 0) scale(-1 1)`);
+  }
+
+  function reset(){
+    cancelAnimationFrame(raf); clearTimeout(holdTimer);
+    running=false; holding=false; armed=false; pull=0;
     fx.classList.remove("active","launching");
-    shaft.setAttribute("transform","translate(0 -260)"); arrow.setAttribute("opacity","0"); bowl.setAttribute("opacity","0");
-    left.setAttribute("transform","translate(-175 0)"); right.setAttribute("transform","translate(175 0)");
-    top.setAttribute("opacity","0"); glow.setAttribute("opacity","0"); label.setAttribute("opacity","0"); bar.style.width="0%";
-  };
-  const animate=(ms,fn,done)=>{
+    hint.textContent="PULL DOWN & HOLD";
+    shaft.setAttribute("transform","translate(0 -285)");
+    arrow.setAttribute("opacity","0");
+    bowl.setAttribute("opacity","0");
+    bowl.setAttribute("transform","translate(0 45)");
+    setBowlPositions(-190);
+    shaftFinal.setAttribute("opacity","1");
+    labels.setAttribute("opacity","0");
+    top.setAttribute("opacity","0");
+    top.setAttribute("transform","translate(195 390) scale(.62)");
+    glow.setAttribute("opacity","0");
+    bar.style.width="0%";
+    topHighlight.setAttribute("transform","rotate(0)");
+    topGrooves.setAttribute("transform","rotate(0)");
+    topKey.setAttribute("transform","rotate(0)");
+  }
+
+  function animate(ms,fn,done){
     const t0=performance.now();
-    const frame=now=>{const p=Math.min(1,(now-t0)/ms);fn(p);if(p<1){raf=requestAnimationFrame(frame)}else if(done)done()};
+    const frame=now=>{
+      const p=Math.min(1,(now-t0)/ms);
+      fn(p);
+      if(p<1) raf=requestAnimationFrame(frame); else if(done) done();
+    };
     raf=requestAnimationFrame(frame);
-  };
+  }
+
   function launch(){
     if(running)return;
     running=true; holding=false; armed=false; fx.classList.add("launching");
-    const start=-15;
-    animate(720,p=>{
-      const e=ease(p), y=lerp(start,170,e), spin=p*360;
-      shaft.setAttribute("transform",`translate(0 ${y})`);
+    hint.textContent="RELEASE";
+
+    // 1 — shaft shoots into the centre, rotating as it travels.
+    animate(1050,p=>{
+      const e=ease(p), y=lerp(-18,112,e), spin=p*420;
+      shaft.setAttribute("transform",`translate(0 ${y}) rotate(${spin} 195 300)`);
       arrow.setAttribute("opacity",String(1-e));
-      glow.setAttribute("opacity",String(.15+.35*e));
-      const sg=document.getElementById("shaftGroup"); sg.setAttribute("transform",`translate(0 ${y}) rotate(${spin} 195 300)`);
+      glow.setAttribute("opacity",String(.12+.25*e));
+      bar.style.width=`${70+Math.round(p*8)}%`;
     },()=>{
-      const sg=document.getElementById("shaftGroup"); sg.setAttribute("transform","translate(0 170)");
+      shaft.setAttribute("opacity","0");
       bowl.setAttribute("opacity","1");
-      left.setAttribute("transform","translate(-175 0)"); right.setAttribute("transform","translate(175 0)");
-      animate(900,p=>{
-        const e=ease(p), x=lerp(-175,0,e);
-        left.setAttribute("transform",`translate(${x} 0)`);right.setAttribute("transform",`translate(${-x} 0)`);
-        bar.style.width=`${50+Math.round(p*18)}%`;
+      bowl.setAttribute("transform","translate(0 45)");
+      setBowlPositions(-190);
+
+      // 2 — split pump bowl travels in from both sides and closes around the shaft.
+      animate(1250,p=>{
+        const e=ease(p), x=lerp(-190,0,e);
+        setBowlPositions(x);
+        bar.style.width=`${78+Math.round(p*8)}%`;
       },()=>{
-        glow.setAttribute("opacity",".5");
-        animate(650,p=>{
-          const e=ease(p), s=1-.12*e;
-          bowl.setAttribute("transform",`translate(0 ${45-45*e}) scale(${s})`);
-          label.setAttribute("opacity",String(e));
+        labels.setAttribute("opacity","1");
+        glow.setAttribute("opacity",".42");
+
+        // 3 — the assembled pump settles into position with a slight mechanical compression.
+        animate(520,p=>{
+          const e=ease(p), sy=1-.035*Math.sin(e*Math.PI);
+          bowl.setAttribute("transform",`translate(0 ${45-7*e}) scale(1 ${sy})`);
         },()=>{
-          // Transition from assembled side view into a top-down bearing view.
-          animate(1100,p=>{
-            const e=ease(p), sy=lerp(1,.12,e), oy=lerp(0,-65,e);
-            bowl.setAttribute("transform",`translate(0 ${oy+45}) scale(${sy})`);
-            bowl.setAttribute("opacity",String(1-e*.7));
+          // 4 — camera tips from the side assembly into a top inspection view.
+          animate(1350,p=>{
+            const e=ease(p);
+            const sy=lerp(1,.09,e);
+            const oy=lerp(38,-12,e);
+            const tilt=-7*e;
+            bowl.setAttribute("transform",`translate(195 ${390+oy}) rotate(${tilt}) scale(1 ${sy}) translate(-195 -390)`);
+            bowl.setAttribute("opacity",String(1-e*.9));
             top.setAttribute("opacity",String(e));
-            top.setAttribute("transform",`translate(195 ${385+e*18}) scale(${lerp(.62,1,e)})`);
-            bar.style.width=`${68+Math.round(e*20)}%`;
+            top.setAttribute("transform",`translate(195 ${390-2*e}) scale(${lerp(.58,1,e)})`);
+            bar.style.width=`${86+Math.round(p*7)}%`;
           },()=>{
-            animate(2200,p=>{
-              const e=ease(p), rot=e*760;
-              document.getElementById("topShaftHighlight").setAttribute("transform",`rotate(${rot})`);
-              document.getElementById("grooveRing").setAttribute("transform",`rotate(${-rot*.22})`);
-              top.setAttribute("transform",`translate(195 403) scale(${1+Math.sin(e*Math.PI)*.025})`);
-              bar.style.width=`${88+Math.round(e*10)}%`;
+            // 5 — top view: shaft spins slowly inside the grooved Vesconite bush.
+            hint.textContent="BEARING INTERFACE";
+            animate(2700,p=>{
+              const e=ease(p), rot=e*720;
+              topHighlight.setAttribute("transform",`rotate(${rot})`);
+              topGrooves.setAttribute("transform",`rotate(${-rot*.12})`);
+              topKey.setAttribute("transform",`rotate(${rot})`);
+              top.setAttribute("transform",`translate(195 388) scale(${1+.012*Math.sin(e*Math.PI)})`);
+              glow.setAttribute("opacity",String(.34+.08*Math.sin(e*Math.PI)));
+              bar.style.width=`${93+Math.round(p*5)}%`;
             },()=>{
-              animate(950,p=>{
+              // 6 — fade the engineering view back into AVA.
+              animate(1050,p=>{
                 const e=ease(p), inv=1-e;
                 top.setAttribute("opacity",String(inv));
-                label.setAttribute("opacity",String(inv));
-                glow.setAttribute("opacity",String(inv*.45));
+                labels.setAttribute("opacity",String(inv));
+                glow.setAttribute("opacity",String(inv*.35));
                 bar.style.width=`${98-Math.round(e*98)}%`;
               },reset);
             });
@@ -486,40 +542,56 @@ function calculateFreezer(){
       });
     });
   }
+
   const canStart=()=>document.querySelector("#home.page.active") && window.scrollY<=3 && !running;
+
   window.addEventListener("touchstart",e=>{
     if(!canStart())return;
-    const t=e.touches[0]; if(!t || t.clientY>115)return;
-    startY=t.clientY;holding=true;armed=false;
+    const t=e.touches[0];
+    if(!t || t.clientY>120)return;
+    startY=t.clientY; holding=true; armed=false; pull=0;
     clearTimeout(holdTimer);
   },{passive:true});
+
   window.addEventListener("touchmove",e=>{
     if(!holding || running)return;
-    const t=e.touches[0];if(!t)return;
+    const t=e.touches[0]; if(!t)return;
     const dy=t.clientY-startY;
-    if(dy>5){
+    if(dy>4){
       if(e.cancelable)e.preventDefault();
       setPull(dy);
-      if(dy>72 && !holdTimer){
-        holdTimer=setTimeout(()=>{armed=true;fx.classList.add("launching");},550);
+      if(dy>78 && !holdTimer){
+        holdTimer=setTimeout(()=>{
+          if(holding && pull>78){armed=true;fx.classList.add("launching");hint.textContent="RELEASE";}
+        },520);
       }
     }
   },{passive:false});
+
   window.addEventListener("touchend",()=>{
     if(!holding || running)return;
     clearTimeout(holdTimer);
-    if(pull>72 && armed) launch(); else reset();
+    if(pull>78 && armed)launch(); else reset();
   },{passive:true});
-  // Desktop fallback: drag from the top and release after the hold threshold.
+
+  // Desktop testing fallback.
+  let mouseMove;
   window.addEventListener("pointerdown",e=>{
     if(e.pointerType!=="mouse" || !canStart() || e.clientY>90)return;
-    startY=e.clientY;holding=true;armed=false;
-    try{window.addEventListener("pointermove",mouseMove)}catch{}
-    holdTimer=setTimeout(()=>{if(holding&&pull>72){armed=true;fx.classList.add("launching")}},550);
+    startY=e.clientY;holding=true;armed=false;pull=0;
+    mouseMove=e2=>{if(!holding||running)return;const dy=e2.clientY-startY;if(dy>4)setPull(dy)};
+    window.addEventListener("pointermove",mouseMove);
+    holdTimer=setTimeout(()=>{if(holding&&pull>78){armed=true;fx.classList.add("launching");hint.textContent="RELEASE"}},520);
   });
-  const mouseMove=e=>{if(!holding||running)return;const dy=e.clientY-startY;if(dy>5)setPull(dy)};
-  window.addEventListener("pointerup",()=>{if(!holding||running)return;clearTimeout(holdTimer);if(pull>72&&armed)launch();else reset()});
+  window.addEventListener("pointerup",()=>{
+    if(!holding || running)return;
+    clearTimeout(holdTimer);
+    if(mouseMove)window.removeEventListener("pointermove",mouseMove);
+    if(pull>78&&armed)launch();else reset();
+  });
+
   reset();
+  if(new URLSearchParams(location.search).has("pumpTest")) setTimeout(launch,300);
 })();
 
 function formatTime(min){if(!Number.isFinite(min)||min<=0)return"Not achievable";if(min<60)return `${Math.ceil(min)} min`;const h=Math.floor(min/60),m=Math.ceil(min%60);return `${h} h ${m?m+" min":""}`}

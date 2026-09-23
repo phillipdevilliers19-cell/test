@@ -1,46 +1,20 @@
-# AVA Internal
+# AVA Internal v10
 
-A mobile-first internal engineering web app for Vesconite.
+This build includes the revised interactive vertical-turbine-pump pull-down animation.
 
-## Included
+## Animation
+1. Start at the top of Home.
+2. Pull down from the top edge and hold.
+3. The shaft extends and the release cue appears.
+4. Release after the hold threshold.
+5. The shaft launches into the centre and rotates.
+6. Two pump-bowl halves enter from opposite sides and close around the shaft.
+7. The exposed assembly shows the Vesconite wear-ring / grooved-bush interface.
+8. The view tips toward a top inspection view.
+9. The shaft rotation is shown inside the grooved Vesconite bearing.
+10. The engineering view slows and fades back to AVA.
 
-- General bearing design calculator
-- Pump bearing calculator
-- Marine bearing calculator
-- Motion / PV calculator
-- Freezer-fit cooling-time estimator
-- Warm-up-time estimator
-- Application library
-- Add new industries from the app
-- Photo capture/upload
-- Common application questions
-- Search and industry filtering
-- Local browser storage
-- JSON backup / restore
-- GitHub Pages compatible
-- No AI, API key or paid service required
+The animation is implemented with inline SVG, CSS and JavaScript; it is not a prerecorded video.
 
-## GitHub Pages
-
-1. Create a public GitHub repository.
-2. Upload `index.html`, `style.css` and `app.js` to the repository root.
-3. Go to Settings → Pages.
-4. Set deployment to the `main` branch and `/ (root)`.
-5. Open the GitHub Pages URL.
-
-## Important database note
-
-GitHub Pages is static hosting. The application library in this first version is stored locally in each employee's browser. It is therefore not a shared company database.
-
-Use Export / Import to move records between devices.
-
-For a true shared multi-user database, the next version can connect this interface to a backend such as Supabase/Firebase or another company-approved service.
-
-## Engineering note
-
-The bearing calculations are based on published Vesconite design guidance where formulas are available. The freezer calculator is an engineering estimate using a lumped thermal model and must be validated against actual installation trials before being used as a production instruction.
-
-
-## Portfolio linking
-
-Open any application, choose **Link applications**, select related records, and save. **Export / Print PDF** then creates a combined A4 application portfolio with a cover page and one section per linked application.
+## Existing data
+Application data remains under the existing localStorage keys. Replace only `index.html`, `app.js`, and `style.css` when updating an existing AVA deployment.
