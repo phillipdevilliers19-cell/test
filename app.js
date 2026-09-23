@@ -401,6 +401,127 @@ function calculateFreezer(){
  <div class="formula-note"><strong>Practical Vesconite reference</strong><p>Vesconite reports a 300 mm long Hilube bush that was fitted by hand after two hours in dry ice. That is a dry-ice field reference, not a freezer calibration point.</p></div></div>`;
 }
 
+
+/* AVA signature pull-down pump assembly animation */
+(function initPumpEasterEgg(){
+  const fx=document.getElementById("avaPumpFx");
+  if(!fx || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const svg=document.getElementById("pumpSvg"), shaft=document.getElementById("shaftGroup"), arrow=document.getElementById("launchArrow");
+  const bowl=document.getElementById("bowlGroup"), left=document.getElementById("bowlLeft"), right=document.getElementById("bowlRight");
+  const top=document.getElementById("topView"), glow=document.getElementById("fxGlow"), label=document.getElementById("fxLabel"), bar=document.getElementById("fxProgressBar");
+  let startY=0,pull=0,holding=false,armed=false,holdTimer=null,running=false,raf=0;
+  const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+  const lerp=(a,b,t)=>a+(b-a)*t;
+  const setPull=v=>{
+    pull=clamp(v,0,190);
+    fx.classList.add("active");
+    const p=pull/190;
+    shaft.setAttribute("transform",`translate(0 ${lerp(-260,-15,p)})`);
+    arrow.setAttribute("opacity",String(Math.max(0,(p-.25)/.35)));
+    bar.style.width=`${Math.round(p*100)}%`;
+  };
+  const reset=()=>{
+    cancelAnimationFrame(raf);clearTimeout(holdTimer);running=false;holding=false;armed=false;pull=0;
+    fx.classList.remove("active","launching");
+    shaft.setAttribute("transform","translate(0 -260)"); arrow.setAttribute("opacity","0"); bowl.setAttribute("opacity","0");
+    left.setAttribute("transform","translate(-175 0)"); right.setAttribute("transform","translate(175 0)");
+    top.setAttribute("opacity","0"); glow.setAttribute("opacity","0"); label.setAttribute("opacity","0"); bar.style.width="0%";
+  };
+  const animate=(ms,fn,done)=>{
+    const t0=performance.now();
+    const frame=now=>{const p=Math.min(1,(now-t0)/ms);fn(p);if(p<1){raf=requestAnimationFrame(frame)}else if(done)done()};
+    raf=requestAnimationFrame(frame);
+  };
+  function launch(){
+    if(running)return;
+    running=true; holding=false; armed=false; fx.classList.add("launching");
+    const start=-15;
+    animate(720,p=>{
+      const e=ease(p), y=lerp(start,170,e), spin=p*360;
+      shaft.setAttribute("transform",`translate(0 ${y})`);
+      arrow.setAttribute("opacity",String(1-e));
+      glow.setAttribute("opacity",String(.15+.35*e));
+      const sg=document.getElementById("shaftGroup"); sg.setAttribute("transform",`translate(0 ${y}) rotate(${spin} 195 300)`);
+    },()=>{
+      const sg=document.getElementById("shaftGroup"); sg.setAttribute("transform","translate(0 170)");
+      bowl.setAttribute("opacity","1");
+      left.setAttribute("transform","translate(-175 0)"); right.setAttribute("transform","translate(175 0)");
+      animate(900,p=>{
+        const e=ease(p), x=lerp(-175,0,e);
+        left.setAttribute("transform",`translate(${x} 0)`);right.setAttribute("transform",`translate(${-x} 0)`);
+        bar.style.width=`${50+Math.round(p*18)}%`;
+      },()=>{
+        glow.setAttribute("opacity",".5");
+        animate(650,p=>{
+          const e=ease(p), s=1-.12*e;
+          bowl.setAttribute("transform",`translate(0 ${45-45*e}) scale(${s})`);
+          label.setAttribute("opacity",String(e));
+        },()=>{
+          // Transition from assembled side view into a top-down bearing view.
+          animate(1100,p=>{
+            const e=ease(p), sy=lerp(1,.12,e), oy=lerp(0,-65,e);
+            bowl.setAttribute("transform",`translate(0 ${oy+45}) scale(${sy})`);
+            bowl.setAttribute("opacity",String(1-e*.7));
+            top.setAttribute("opacity",String(e));
+            top.setAttribute("transform",`translate(195 ${385+e*18}) scale(${lerp(.62,1,e)})`);
+            bar.style.width=`${68+Math.round(e*20)}%`;
+          },()=>{
+            animate(2200,p=>{
+              const e=ease(p), rot=e*760;
+              document.getElementById("topShaftHighlight").setAttribute("transform",`rotate(${rot})`);
+              document.getElementById("grooveRing").setAttribute("transform",`rotate(${-rot*.22})`);
+              top.setAttribute("transform",`translate(195 403) scale(${1+Math.sin(e*Math.PI)*.025})`);
+              bar.style.width=`${88+Math.round(e*10)}%`;
+            },()=>{
+              animate(950,p=>{
+                const e=ease(p), inv=1-e;
+                top.setAttribute("opacity",String(inv));
+                label.setAttribute("opacity",String(inv));
+                glow.setAttribute("opacity",String(inv*.45));
+                bar.style.width=`${98-Math.round(e*98)}%`;
+              },reset);
+            });
+          });
+        });
+      });
+    });
+  }
+  const canStart=()=>document.querySelector("#home.page.active") && window.scrollY<=3 && !running;
+  window.addEventListener("touchstart",e=>{
+    if(!canStart())return;
+    const t=e.touches[0]; if(!t || t.clientY>115)return;
+    startY=t.clientY;holding=true;armed=false;
+    clearTimeout(holdTimer);
+  },{passive:true});
+  window.addEventListener("touchmove",e=>{
+    if(!holding || running)return;
+    const t=e.touches[0];if(!t)return;
+    const dy=t.clientY-startY;
+    if(dy>5){
+      if(e.cancelable)e.preventDefault();
+      setPull(dy);
+      if(dy>72 && !holdTimer){
+        holdTimer=setTimeout(()=>{armed=true;fx.classList.add("launching");},550);
+      }
+    }
+  },{passive:false});
+  window.addEventListener("touchend",()=>{
+    if(!holding || running)return;
+    clearTimeout(holdTimer);
+    if(pull>72 && armed) launch(); else reset();
+  },{passive:true});
+  // Desktop fallback: drag from the top and release after the hold threshold.
+  window.addEventListener("pointerdown",e=>{
+    if(e.pointerType!=="mouse" || !canStart() || e.clientY>90)return;
+    startY=e.clientY;holding=true;armed=false;
+    try{window.addEventListener("pointermove",mouseMove)}catch{}
+    holdTimer=setTimeout(()=>{if(holding&&pull>72){armed=true;fx.classList.add("launching")}},550);
+  });
+  const mouseMove=e=>{if(!holding||running)return;const dy=e.clientY-startY;if(dy>5)setPull(dy)};
+  window.addEventListener("pointerup",()=>{if(!holding||running)return;clearTimeout(holdTimer);if(pull>72&&armed)launch();else reset()});
+  reset();
+})();
+
 function formatTime(min){if(!Number.isFinite(min)||min<=0)return"Not achievable";if(min<60)return `${Math.ceil(min)} min`;const h=Math.floor(min/60),m=Math.ceil(min%60);return `${h} h ${m?m+" min":""}`}
 
 function exportApplicationReport(id, selectedIds=[]){

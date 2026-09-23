@@ -99,3 +99,15 @@ input,select,textarea{font-size:16px;}
   .portfolio-editor .grid{grid-template-columns:1fr}
   .portfolio-editor h1{font-size:31px}
 }
+
+/* AVA engineering pull-down animation */
+.ava-pump-fx{position:fixed;inset:0;z-index:80;display:none;pointer-events:none;background:radial-gradient(circle at 50% 45%,rgba(16,49,56,.82),rgba(3,9,13,.96) 72%);overflow:hidden}
+.ava-pump-fx.active{display:block}
+.ava-pump-fx .fx-stage{position:absolute;inset:64px 0 58px;display:grid;place-items:center}
+#pumpSvg{width:min(92vw,430px);height:min(82vh,760px);overflow:visible}
+.fx-hint{position:absolute;top:calc(18px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);font:800 10px/1 Manrope;letter-spacing:2.8px;color:#54e1bd;opacity:.85}
+.fx-progress{position:absolute;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%);width:100px;height:3px;background:#20343d;border-radius:99px;overflow:hidden;opacity:.7}
+.fx-progress span{display:block;width:0;height:100%;background:#54e1bd;box-shadow:0 0 12px rgba(84,225,189,.7)}
+@keyframes fxPulse{50%{opacity:.58}}
+.ava-pump-fx.launching .fx-hint{animation:fxPulse 1s infinite}
+@media(prefers-reduced-motion:reduce){.ava-pump-fx{display:none!important}}

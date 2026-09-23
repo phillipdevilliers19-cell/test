@@ -155,6 +155,66 @@
     </div>
   </div>
 
+
+  <div id="avaPumpFx" class="ava-pump-fx" aria-hidden="true">
+    <div class="fx-hint">PULL & HOLD</div>
+    <div class="fx-stage">
+      <svg id="pumpSvg" viewBox="0 0 390 760" role="presentation">
+        <defs>
+          <linearGradient id="metal" x1="0" x2="1"><stop offset="0" stop-color="#71828b"/><stop offset=".18" stop-color="#e8f1f3"/><stop offset=".42" stop-color="#8d9da4"/><stop offset=".58" stop-color="#f8fbfb"/><stop offset=".82" stop-color="#65767f"/><stop offset="1" stop-color="#c7d2d6"/></linearGradient>
+          <linearGradient id="darkMetal" x1="0" x2="1"><stop stop-color="#1c2a31"/><stop offset=".3" stop-color="#70828a"/><stop offset=".5" stop-color="#c7d2d6"/><stop offset=".72" stop-color="#4c5d65"/><stop offset="1" stop-color="#18252c"/></linearGradient>
+          <linearGradient id="pumpBlue" x1="0" x2="1"><stop stop-color="#183946"/><stop offset=".28" stop-color="#3f7280"/><stop offset=".52" stop-color="#173440"/><stop offset=".78" stop-color="#557f8b"/><stop offset="1" stop-color="#122a35"/></linearGradient>
+          <linearGradient id="vesconite" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f0e5b7"/><stop offset=".45" stop-color="#d5c68e"/><stop offset="1" stop-color="#9d8d59"/></linearGradient>
+          <radialGradient id="bowlTop"><stop offset="0" stop-color="#101b21"/><stop offset=".72" stop-color="#24353c"/><stop offset="1" stop-color="#081117"/></radialGradient>
+          <filter id="soft"><feGaussianBlur stdDeviation="7"/></filter>
+        </defs>
+        <g id="fxGlow" opacity="0"><ellipse cx="195" cy="390" rx="150" ry="250" fill="#54e1bd" opacity=".06" filter="url(#soft)"/></g>
+        <g id="shaftGroup" transform="translate(0 -260)">
+          <ellipse cx="195" cy="92" rx="34" ry="10" fill="#101a20" opacity=".5"/>
+          <rect x="166" y="58" width="58" height="370" rx="22" fill="url(#metal)" stroke="#dbe5e8" stroke-width="1.5"/>
+          <ellipse cx="195" cy="428" rx="29" ry="9" fill="#27363d"/>
+          <ellipse cx="195" cy="58" rx="29" ry="8" fill="#dbe5e8"/>
+          <path d="M188 72v345" stroke="#fff" opacity=".34" stroke-width="4"/>
+        </g>
+        <g id="launchArrow" opacity="0">
+          <path d="M195 120v120" stroke="#54e1bd" stroke-width="4" stroke-linecap="round"/>
+          <path d="M180 220l15 18 15-18" fill="none" stroke="#54e1bd" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+        <g id="bowlGroup" opacity="0" transform="translate(0 45)">
+          <g id="bowlLeft">
+            <path d="M22 270 Q35 160 98 120 Q128 102 170 106 L170 510 Q90 495 53 430 Q25 380 22 270Z" fill="url(#pumpBlue)" stroke="#71919b" stroke-width="2"/>
+            <path d="M44 264 Q57 185 107 153 Q133 137 165 140 L165 472 Q105 458 76 411 Q48 365 44 264Z" fill="#10262f" opacity=".62"/>
+            <rect x="141" y="214" width="29" height="210" rx="5" fill="url(#vesconite)" stroke="#f3e9bf" stroke-width="2"/>
+            <g stroke="#8f7c4b" stroke-width="2" opacity=".8"><path d="M144 242h25"/><path d="M144 270h25"/><path d="M144 298h25"/><path d="M144 326h25"/><path d="M144 354h25"/><path d="M144 382h25"/></g>
+          </g>
+          <g id="bowlRight" transform="translate(368 0) scale(-1 1)">
+            <path d="M22 270 Q35 160 98 120 Q128 102 170 106 L170 510 Q90 495 53 430 Q25 380 22 270Z" fill="url(#pumpBlue)" stroke="#71919b" stroke-width="2"/>
+            <path d="M44 264 Q57 185 107 153 Q133 137 165 140 L165 472 Q105 458 76 411 Q48 365 44 264Z" fill="#10262f" opacity=".62"/>
+            <rect x="141" y="214" width="29" height="210" rx="5" fill="url(#vesconite)" stroke="#f3e9bf" stroke-width="2"/>
+            <g stroke="#8f7c4b" stroke-width="2" opacity=".8"><path d="M144 242h25"/><path d="M144 270h25"/><path d="M144 298h25"/><path d="M144 326h25"/><path d="M144 354h25"/><path d="M144 382h25"/></g>
+          </g>
+          <g id="shaftFinal">
+            <rect x="171" y="92" width="48" height="400" rx="18" fill="url(#metal)" stroke="#dbe5e8"/>
+            <path d="M187 105v370" stroke="#fff" opacity=".32" stroke-width="4"/>
+          </g>
+        </g>
+        <g id="topView" opacity="0" transform="translate(195 385)">
+          <circle r="146" fill="#12242d" stroke="#58737d" stroke-width="3"/>
+          <circle r="120" fill="url(#bowlTop)" stroke="#314a53" stroke-width="8"/>
+          <circle r="88" fill="url(#vesconite)" stroke="#f4ebc8" stroke-width="3"/>
+          <circle r="64" fill="#17262d" stroke="#7b8b90" stroke-width="4"/>
+          <circle r="27" fill="url(#metal)" stroke="#e5edef" stroke-width="2"/>
+          <g id="grooveRing" fill="none" stroke="#897849" stroke-width="3" opacity=".9">
+            <circle r="75"/><circle r="80"/>
+          </g>
+          <g id="topShaftHighlight"><path d="M0 -27v-37" stroke="#fff" stroke-width="4" opacity=".6" stroke-linecap="round"/></g>
+        </g>
+        <g id="fxLabel" opacity="0"><text x="195" y="690" text-anchor="middle" fill="#54e1bd" font-size="10" font-family="Arial" letter-spacing="2.5">VERTICAL TURBINE PUMP · CASING WEAR RING</text></g>
+      </svg>
+    </div>
+    <div class="fx-progress"><span id="fxProgressBar"></span></div>
+  </div>
+
   <nav class="bottom-nav">
     <button class="nav-item active" data-page="home"><span>⌂</span>Home</button>
     <button class="nav-item" data-page="library"><span>▣</span>Library</button>
