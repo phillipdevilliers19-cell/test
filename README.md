@@ -1,13 +1,21 @@
-# AVA Internal v11 — Reference-Correct Pump Animation
+# AVA Internal v13 — Application Intelligence
 
-This version refines the AVA pull-down pump animation using the supplied vertical turbine pump bowl reference.
+Mobile-first internal application database and sales-enablement tool for Vesconite Bearings.
 
-Key changes:
-- Bowl geometry now follows the supplied reference: broad top flange, rounded/flared shoulder, cylindrical lower bowl, internal throat and central bearing region.
-- The bowl is built as a true left/right split of one common geometry, so the halves meet on the shaft centreline rather than behaving like two unrelated side panels.
-- The casing wear ring and pressed-in grooved bush are represented concentrically inside the bowl.
-- Shaft, bowl halves and bearing interface remain separate animation elements.
-- Top inspection view shows the flange, cavity, wear ring, grooved bush and rotating shaft.
-- Existing AVA application data and portfolio functionality are unchanged.
+## Included
+- Application database with search, industry/product/completeness filters and tag chips
+- Application quality/completeness scoring
+- Customer problem / Vesconite solution / proof fields
+- Similar application discovery
+- Temporary customer-facing application view
+- Temporary customer portfolio builder with category filtering and live editing
+- Browser print-to-PDF export from the edited portfolio
+- Material comparison builder
+- Local sales opportunity tracker linked to applications
+- Knowledge hub with official Vesconite resources
+- Multiple photos with captions
+- Local JSON backup/restore
+- Browser localStorage only; no shared backend
 
-Test gesture: on Home, at the top of the page, pull down and hold, then release.
+## Deployment
+Upload `index.html`, `app.js`, and `style.css` to GitHub Pages.

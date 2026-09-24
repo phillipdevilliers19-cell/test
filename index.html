@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0b1118">
+  <meta name="theme-color" content="#ffffff">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>AVA Internal</title>
@@ -13,10 +13,10 @@
 <div class="app-shell">
   <header class="topbar">
     <div class="brand">
-      <div class="brand-mark">A</div>
+      <div class="brand-logo-wrap"><img class="brand-logo" src="https://www.vesconite.com/wp-content/themes/vesco/assets/img/headfoot/vesconite-header-logo.svg?v=5" alt="Vesconite Bearings"><span class="ava-badge">AVA</span></div>
       <div>
         <div class="brand-name">AVA <span>Internal</span></div>
-        <div class="brand-sub">Engineering knowledge & design tools</div>
+        <div class="brand-sub">Application intelligence & sales enablement</div>
       </div>
     </div>
     <button class="icon-btn" id="backupBtn" title="Backup / restore">↥</button>
@@ -51,7 +51,12 @@
         <div><span class="eyebrow">THE PURPOSE OF AVA</span><h2>Build a database worth showing to customers.</h2><p>Capture the machine, problem, material, environment, installation and outcome. Then turn a selection of proven applications into a polished, client-ready portfolio in one click.</p></div>
         <div class="database-points"><span>01 · Evidence over claims</span><span>02 · Photos tell the story</span><span>03 · Export meaningful portfolios</span></div>
       </div>
-      <div class="notice"><span>i</span><div><strong>Internal application database</strong><p>Records are stored in this browser. Use Backup / Restore to move the library between devices. Portfolio selections are temporary and are not saved to the application record.</p></div></div>
+      <div class="home-command-grid">
+        <button class="quick-card" data-page="compare"><span class="q-icon">⇄</span><strong>Compare Materials</strong><small>Build a customer-ready comparison</small><b>→</b></button>
+        <button class="quick-card" data-page="sales"><span class="q-icon">◫</span><strong>Sales Opportunities</strong><small>Track customer problems and next actions</small><b>→</b></button>
+        <button class="quick-card" data-page="knowledge"><span class="q-icon">⌘</span><strong>Knowledge Hub</strong><small>Technical resources and field guidance</small><b>→</b></button>
+      </div>
+      <div class="notice"><span>i</span><div><strong>Internal application database</strong><p>Records are stored in this browser. Use Backup / Restore to move the library between devices. Customer portfolios, comparisons and customer-view edits are temporary and never overwrite the original application.</p></div></div>
     </section>
 
     <section id="calculators" class="page hidden-tool">
@@ -78,7 +83,8 @@
 
     <section id="library" class="page">
       <div class="page-title split"><div><p class="eyebrow">FIELD KNOWLEDGE</p><h1>Application Library</h1><p>Build a searchable internal record of real-world applications.</p></div><button class="primary" data-page="add-app">＋ Add</button></div>
-      <div class="library-tools"><input id="librarySearch" placeholder="Search applications, products, notes…"><select id="industryFilter"><option value="">All industries</option></select></div>
+      <div class="library-tools library-tools-advanced"><input id="librarySearch" placeholder="Search applications, products, tags, customers, notes…"><select id="industryFilter"><option value="">All industries</option></select><select id="productFilter"><option value="">All products</option></select><select id="qualityFilter"><option value="">Any completeness</option><option value="high">High quality</option><option value="medium">Needs detail</option><option value="low">Needs evidence</option></select></div>
+      <div id="libraryChips" class="filter-chips"></div>
       <div id="libraryList"></div>
     </section>
 
@@ -91,6 +97,13 @@
         <label>New industry <span class="optional">optional</span><input id="newIndustry" placeholder="If not listed, type it here"></label>
         <label>Product / material<input id="appProduct" placeholder="e.g. Vesconite Hilube"></label>
         <label>Application description<textarea required id="appDescription" rows="4" placeholder="What does the bearing do? Where is it used?"></textarea></label>
+        <div class="two-col"><label>Application tags <span class="optional">comma separated</span><input id="appTags" placeholder="wear ring, water, rotary, bronze replacement"></label><label>Customer / OEM <span class="optional">optional</span><input id="appCustomer" placeholder="Customer or OEM name"></label></div>
+        <div class="question-block"><div class="eyebrow">CUSTOMER STORY</div>
+          <label>Customer problem<textarea id="qProblem" rows="3" placeholder="What problem were they experiencing?"></textarea></label>
+          <label>Vesconite solution<textarea id="qSolution" rows="3" placeholder="What was changed and how was Vesconite used?"></textarea></label>
+          <label>Result / proof<textarea id="qProof" rows="3" placeholder="Measured life, wear, downtime, maintenance, customer feedback…"></textarea></label>
+          <label>Customer-safe summary <span class="optional">optional</span><textarea id="qCustomerSummary" rows="3" placeholder="A short version suitable for showing a prospective customer."></textarea></label>
+        </div>
         <div class="question-block">
           <div class="eyebrow">COMMON APPLICATION QUESTIONS</div>
           <label>What was the original material?<input id="qOriginal" placeholder="e.g. bronze, rubber, composite"></label>
@@ -112,6 +125,25 @@
     <section id="app-detail" class="page">
       <button class="back" data-page="library">← Application Library</button>
       <div id="appDetail"></div>
+    </section>
+
+    <section id="compare" class="page">
+      <div class="page-title"><p class="eyebrow">SALES ENABLEMENT</p><h1>Material Comparison</h1><p>Build a clean customer-facing comparison from your application evidence.</p></div>
+      <div class="form-card compare-controls"><div class="two-col"><label>Original material<input id="compareOriginal" placeholder="e.g. Bronze"></label><label>Vesconite material<input id="compareVesconite" value="Vesconite / Vesconite Hilube"></label></div><label>What matters to this customer?<input id="compareFocus" placeholder="e.g. water, corrosion, wear, maintenance"></label><button class="primary wide" id="buildComparison">Build Comparison</button></div>
+      <div id="comparisonOutput"></div>
+    </section>
+
+    <section id="sales" class="page">
+      <div class="page-title split"><div><p class="eyebrow">SALES PIPELINE</p><h1>Sales Opportunities</h1><p>Connect customer problems to proven Vesconite applications.</p></div><button class="primary" id="newOpportunityBtn">＋ Opportunity</button></div>
+      <div class="stats"><div class="stat"><span id="oppCount">0</span><small>Open opportunities</small></div><div class="stat"><span id="customerCount">0</span><small>Customers</small></div><div class="stat"><span id="evidenceCount">0</span><small>Evidence-rich applications</small></div></div>
+      <div id="opportunityList"></div>
+      <div id="opportunityFormWrap" class="hidden"></div>
+    </section>
+
+    <section id="knowledge" class="page">
+      <div class="page-title"><p class="eyebrow">KNOWLEDGE HUB</p><h1>Vesconite Knowledge</h1><p>Structured guidance, official resources and internal field knowledge.</p></div>
+      <div class="knowledge-grid" id="knowledgeGrid"></div>
+      <div class="knowledge-note"><strong>Source discipline</strong><p>Official Vesconite technical resources are kept separate from internal application evidence. Do not present an internal estimate as an official published limit.</p></div>
     </section>
 
     <section id="backup" class="page">
@@ -147,135 +179,35 @@
         <div><p class="eyebrow">CLIENT PORTFOLIO</p><h2>Preview & Edit</h2><p>Everything here is a temporary portfolio draft. Editing it will not change the original applications.</p></div>
         <button class="modal-close" id="closeEditorModal">×</button>
       </div>
-      <div class="editor-actions">
-        <span id="editorStatus">Draft — original application records are untouched</span>
-        <div><button class="secondary" id="backToPortfolio">← Applications</button><button class="primary" id="generatePortfolioPdf">Generate PDF</button></div>
+      <div class="portfolio-designer">
+        <div class="designer-settings">
+          <div class="setting-group"><label>Customer / company name<input id="portfolioCustomerName" placeholder="e.g. ABC Pumps Ltd"></label><label>Portfolio title<input id="portfolioTitle" value="Vesconite Application Portfolio"></label></div>
+          <div class="setting-group"><label>Cover style<select id="portfolioCoverStyle"><option value="engineering">Engineering</option><option value="clean">Clean</option><option value="dark">Dark Technical</option></select></label><label>Intro text<textarea id="portfolioIntro" rows="2">Proven application experience selected from the AVA Internal database.</textarea></label></div>
+        </div>
+        <div class="editor-actions">
+          <span id="editorStatus">Draft — original application records are untouched</span>
+          <div><button class="secondary" id="backToPortfolio">← Applications</button><button class="primary" id="generatePortfolioPdf">Generate PDF</button></div>
+        </div>
       </div>
-      <div id="portfolioEditor" class="portfolio-editor"></div>
+      <div class="portfolio-workspace"><aside class="portfolio-outline"><div class="outline-head"><strong>PORTFOLIO ORDER</strong><span id="outlineCount"></span></div><div id="portfolioOutline"></div></aside><div id="portfolioEditor" class="portfolio-editor"></div></div>
     </div>
   </div>
 
 
-  <div id="avaPumpFx" class="ava-pump-fx" aria-hidden="true">
-    <div class="fx-hint" id="fxHint">PULL DOWN &amp; HOLD</div>
-    <div class="fx-stage">
-      <svg id="pumpSvg" viewBox="0 0 390 760" role="img" aria-label="Vertical turbine pump bowl assembly animation">
-        <defs>
-          <linearGradient id="metal" x1="0" x2="1"><stop stop-color="#26343b"/><stop offset=".16" stop-color="#f1f6f7"/><stop offset=".38" stop-color="#71828a"/><stop offset=".55" stop-color="#ffffff"/><stop offset=".78" stop-color="#52636b"/><stop offset="1" stop-color="#d3dde0"/></linearGradient>
-          <linearGradient id="steelDark" x1="0" x2="1"><stop stop-color="#081318"/><stop offset=".25" stop-color="#48616b"/><stop offset=".5" stop-color="#aebdc2"/><stop offset=".72" stop-color="#3b5059"/><stop offset="1" stop-color="#071116"/></linearGradient>
-          <linearGradient id="pumpBlue" x1="0" x2="1"><stop stop-color="#081a23"/><stop offset=".18" stop-color="#4b7885"/><stop offset=".43" stop-color="#153b48"/><stop offset=".64" stop-color="#6a919b"/><stop offset="1" stop-color="#091d26"/></linearGradient>
-          <linearGradient id="vesconite" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f4e9bd"/><stop offset=".42" stop-color="#d2bf82"/><stop offset="1" stop-color="#857341"/></linearGradient>
-          <radialGradient id="cavity"><stop offset="0" stop-color="#020709"/><stop offset=".64" stop-color="#152830"/><stop offset="1" stop-color="#061116"/></radialGradient>
-          <filter id="soft"><feGaussianBlur stdDeviation="9"/></filter>
-          <filter id="shadow"><feGaussianBlur stdDeviation="4"/></filter>
-          <clipPath id="leftHalf"><rect x="0" y="0" width="195" height="560"/></clipPath>
-          <clipPath id="rightHalf"><rect x="195" y="0" width="195" height="560"/></clipPath>
-        </defs>
 
-        <g id="fxGlow" opacity="0"><ellipse cx="195" cy="402" rx="154" ry="240" fill="#54e1bd" opacity=".07" filter="url(#soft)"/></g>
+  <div id="customerViewModal" class="modal-backdrop hidden"><div class="customer-modal"><button class="modal-close floating-close" id="closeCustomerView">×</button><div id="customerViewBody"></div></div></div>
 
-        <!-- Shaft held above the assembly -->
-        <g id="shaftGroup" transform="translate(0 -285)">
-          <ellipse cx="195" cy="74" rx="31" ry="9" fill="#071015" opacity=".7"/>
-          <rect x="166" y="58" width="58" height="370" rx="19" fill="url(#metal)" stroke="#dbe5e8" stroke-width="1.4"/>
-          <path d="M185 71v340" stroke="#fff" opacity=".38" stroke-width="4"/>
-          <path d="M211 68v345" stroke="#1b2a31" opacity=".25" stroke-width="5"/>
-          <ellipse cx="195" cy="428" rx="29" ry="9" fill="#26373f"/>
-          <ellipse cx="195" cy="58" rx="29" ry="8" fill="#e5eef0"/>
-        </g>
-
-        <g id="launchArrow" opacity="0">
-          <path d="M195 116v122" stroke="#54e1bd" stroke-width="3.5" stroke-linecap="round"/>
-          <path d="M178 218l17 20 17-20" fill="none" stroke="#54e1bd" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <text x="195" y="264" text-anchor="middle" fill="#9deedc" font-size="9" font-family="Arial" letter-spacing="2">RELEASE</text>
-        </g>
-
-        <!-- Accurate bowl reference: cylindrical lower body, rounded/flared bowl, broad top flange and internal throat. -->
-        <g id="bowlGroup" opacity="0" transform="translate(0 35)">
-          <!-- Left half -->
-          <g id="bowlLeft" clip-path="url(#leftHalf)">
-            <g id="bowlModel">
-              <!-- lower cylindrical bowl -->
-              <path d="M48 506 L48 351 Q49 319 66 295 Q79 276 91 251 L91 222 Q91 195 112 175 Q132 156 153 151 L237 151 Q258 156 278 175 Q299 195 299 222 L299 251 Q311 276 324 295 Q341 319 342 351 L342 506 Z" fill="url(#pumpBlue)" stroke="#73939d" stroke-width="2"/>
-              <!-- rounded bowl shoulder -->
-              <path d="M91 251 Q94 218 116 190 Q132 170 153 164 L237 164 Q258 170 274 190 Q296 218 299 251 Q292 282 274 303 Q256 323 247 346 L143 346 Q134 323 116 303 Q98 282 91 251Z" fill="url(#pumpBlue)" stroke="#86a1a8" stroke-width="1.6"/>
-              <!-- lower cylindrical face -->
-              <path d="M48 351 Q73 365 195 365 Q317 365 342 351 L342 506 Q300 526 195 528 Q90 526 48 506Z" fill="url(#pumpBlue)" stroke="#456773" stroke-width="1.5"/>
-              <ellipse cx="195" cy="506" rx="147" ry="22" fill="#071318" opacity=".5"/>
-              <!-- top flange -->
-              <path d="M55 193 Q55 176 73 169 L92 163 Q106 122 145 105 Q164 96 195 96 Q226 96 245 105 Q284 122 298 163 L317 169 Q335 176 335 193 L335 213 Q335 224 324 228 L66 228 Q55 224 55 213Z" fill="url(#pumpBlue)" stroke="#78949b" stroke-width="2"/>
-              <ellipse cx="195" cy="191" rx="140" ry="48" fill="#132a32" stroke="#7d969d" stroke-width="2"/>
-              <ellipse cx="195" cy="188" rx="119" ry="38" fill="#050d11" stroke="#536c74" stroke-width="5"/>
-              <!-- internal conical throat -->
-              <path d="M77 188 Q83 214 111 232 Q137 249 195 252 Q253 249 279 232 Q307 214 313 188 Q300 211 276 221 Q245 233 195 235 Q145 233 114 221 Q90 211 77 188Z" fill="#071318" stroke="#425c64" stroke-width="2"/>
-              <!-- casing wear ring seated in bowl -->
-              <ellipse cx="195" cy="226" rx="78" ry="23" fill="#1a2528" stroke="#bba873" stroke-width="2"/>
-              <ellipse cx="195" cy="225" rx="68" ry="18" fill="url(#vesconite)" stroke="#f4eac8" stroke-width="2"/>
-              <ellipse cx="195" cy="225" rx="48" ry="12" fill="#091217" stroke="#75653d" stroke-width="2"/>
-              <!-- pressed-in grooved bush lower in the throat -->
-              <path d="M143 246 Q147 237 157 234 L233 234 Q243 237 247 246 L247 329 Q243 339 233 342 L157 342 Q147 339 143 329Z" fill="url(#vesconite)" stroke="#f4eac8" stroke-width="2"/>
-              <g stroke="#75633a" stroke-width="2" opacity=".95">
-                <path d="M148 258h94"/><path d="M146 276h98"/><path d="M145 294h100"/><path d="M145 312h100"/><path d="M148 330h94"/>
-              </g>
-              <!-- internal guide/impeller suggestion -->
-              <ellipse cx="195" cy="348" rx="53" ry="13" fill="#081317" stroke="#526a72" stroke-width="2"/>
-              <path d="M149 347L122 329 M241 347L268 329 M161 350L138 370 M229 350L252 370" stroke="#8aa1a7" stroke-width="4" stroke-linecap="round" opacity=".65"/>
-              <!-- bolts and machining details -->
-              <g fill="#9db1b6" stroke="#263f48" stroke-width="1"><circle cx="75" cy="186" r="5"/><circle cx="315" cy="186" r="5"/><circle cx="77" cy="332" r="4"/><circle cx="313" cy="332" r="4"/></g>
-              <path d="M62 250 Q79 262 94 267 M328 250 Q311 262 296 267" stroke="#b5c7cb" stroke-width="2" opacity=".35"/>
-            </g>
-          </g>
-
-          <!-- Right half is the same real bowl geometry, mirrored by the assembly logic. -->
-          <g id="bowlRight" clip-path="url(#rightHalf)">
-            <g transform="translate(390 0) scale(-1 1)">
-              <use href="#bowlModel"/>
-            </g>
-          </g>
-
-          <!-- shaft and bearing interface, retained as a separate moving part -->
-          <g id="shaftFinal">
-            <rect x="172" y="94" width="46" height="410" rx="16" fill="url(#metal)" stroke="#dbe5e8" stroke-width="1.2"/>
-            <path d="M187 107v382" stroke="#fff" opacity=".34" stroke-width="4"/>
-            <path d="M207 108v385" stroke="#16262d" opacity=".25" stroke-width="4"/>
-            <ellipse cx="195" cy="104" rx="23" ry="7" fill="#eef4f5"/>
-            <ellipse cx="195" cy="494" rx="23" ry="7" fill="#22343c"/>
-          </g>
-          <g id="assemblyLabels" opacity="0">
-            <text x="195" y="553" text-anchor="middle" fill="#8fe8d4" font-size="9" font-family="Arial" letter-spacing="2">VERTICAL TURBINE PUMP BOWL</text>
-            <text x="195" y="571" text-anchor="middle" fill="#728990" font-size="8" font-family="Arial" letter-spacing="1.3">CASING WEAR RING · PRESSED GROOVED BUSH</text>
-          </g>
-        </g>
-
-        <!-- Top inspection view: flange, cavity, wear ring, grooved bush and rotating shaft. -->
-        <g id="topView" opacity="0" transform="translate(195 390) scale(.62)">
-          <ellipse rx="157" ry="145" fill="#081217" stroke="#718d95" stroke-width="4"/>
-          <ellipse rx="143" ry="132" fill="url(#pumpBlue)" stroke="#4b6a73" stroke-width="3"/>
-          <ellipse rx="121" ry="110" fill="#071116" stroke="#92a7ac" stroke-width="5"/>
-          <ellipse rx="103" ry="92" fill="url(#cavity)" stroke="#273f48" stroke-width="4"/>
-          <!-- casing wear ring -->
-          <ellipse rx="84" ry="75" fill="url(#vesconite)" stroke="#f4eac8" stroke-width="3"/>
-          <ellipse rx="69" ry="61" fill="#0b171c" stroke="#786a42" stroke-width="3"/>
-          <!-- grooved bush -->
-          <ellipse rx="59" ry="52" fill="url(#vesconite)" stroke="#f4eac8" stroke-width="3"/>
-          <g id="topGrooves" fill="none" stroke="#75633a" stroke-width="3"><ellipse rx="51" ry="45"/><ellipse rx="44" ry="39"/></g>
-          <ellipse rx="29" ry="26" fill="url(#metal)" stroke="#eef4f5" stroke-width="2"/>
-          <g id="topShaftHighlight"><path d="M0 -20V-67" stroke="#fff" stroke-width="5" opacity=".78" stroke-linecap="round"/></g>
-          <circle id="topKey" cx="0" cy="-19" r="4.5" fill="#4d5e66" stroke="#edf4f5" stroke-width="1.2"/>
-          <path d="M0 -121v-15M121 0h15M0 121v15M-121 0h-15" stroke="#8ca4aa" stroke-width="2" opacity=".65"/>
-          <text x="0" y="178" text-anchor="middle" fill="#8fe8d4" font-size="9" font-family="Arial" letter-spacing="2">BEARING INTERFACE · TOP VIEW</text>
-        </g>
-      </svg>
-    </div>
-    <div class="fx-progress"><span id="fxProgressBar"></span></div>
-  </div>
+  <div id="editAppModal" class="modal-backdrop hidden"><div class="modal edit-record-modal"><div class="modal-head"><div><p class="eyebrow">APPLICATION DATABASE</p><h2>Edit Application</h2><p>Changes here update the internal record. Portfolio edits remain separate.</p></div><button class="modal-close" id="closeEditApp">×</button></div><form id="editAppForm" class="edit-record-form"><div class="two-col"><label>Application name<input id="editName" required></label><label>Industry<select id="editIndustry"></select></label></div><div class="two-col"><label>Product / material<input id="editProduct"></label><label>Customer / OEM<input id="editCustomer"></label></div><label>Tags<input id="editTags"></label><label>Description<textarea id="editDescription" rows="4"></textarea></label><div class="two-col"><label>Original material<input id="editOriginal"></label><label>Environment<input id="editEnvironment"></label></div><div class="two-col"><label>Load / movement / speed<input id="editLoad"></label><label>Temperature<input id="editTemp"></label></div><div class="two-col"><label>Lubrication<input id="editLubrication"></label><label>Machine / OEM<input id="editMachine"></label></div><label>Why Vesconite?<textarea id="editWhy" rows="3"></textarea></label><label>Outcome / evidence<textarea id="editOutcome" rows="3"></textarea></label><div class="two-col"><label>Customer problem<textarea id="editProblem" rows="3"></textarea></label><label>Vesconite solution<textarea id="editSolution" rows="3"></textarea></label></div><label>Result / proof<textarea id="editProof" rows="3"></textarea></label><label>Customer-safe summary<textarea id="editCustomerSummary" rows="3"></textarea></label><label>Recorded by<input id="editAuthor"></label><div class="form-actions"><button type="button" class="secondary" id="cancelEditRecord">Cancel</button><button class="primary" type="submit">Save Record</button></div></form></div></div>
 
   <nav class="bottom-nav">
     <button class="nav-item active" data-page="home"><span>⌂</span>Home</button>
     <button class="nav-item" data-page="library"><span>▣</span>Library</button>
+    <button class="nav-item" data-page="sales"><span>◫</span>Sales</button>
+    <button class="nav-item" data-page="knowledge"><span>⌘</span>Knowledge</button>
     <button class="nav-item" data-page="add-app"><span>＋</span>Add</button>
   </nav>
 </div>
-<script src="app.js"></script>
+<div id="qrModal" class="modal-backdrop hidden"><div class="qr-modal"><button class="modal-close floating-close" id="closeQrModal">×</button><div class="eyebrow">AVA APPLICATION QR</div><h2 id="qrTitle">Application</h2><p id="qrSubtitle">Scan to open this application directly in AVA.</p><div id="qrCode" class="qr-code-box"></div><div class="qr-url" id="qrUrl"></div><div class="qr-actions"><button class="secondary" id="copyQrUrl" type="button">Copy link</button><button class="primary" id="downloadQr" type="button">Download QR</button></div><p class="qr-note">Use this on drawings, samples, internal documents or customer-facing material. The QR opens the application record in AVA.</p></div></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script><script src="app.js"></script>
 </body>
 </html>
