@@ -19,3 +19,6 @@ Mobile-first internal application database and sales-enablement tool for Vesconi
 
 ## Deployment
 Upload `index.html`, `app.js`, and `style.css` to GitHub Pages.
+
+
+Version 20: fixed iPhone header safe-area behavior and guaranteed Home hero image asset.
