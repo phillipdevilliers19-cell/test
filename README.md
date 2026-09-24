@@ -1,20 +1,13 @@
-# AVA Internal v10
+# AVA Internal v11 — Reference-Correct Pump Animation
 
-This build includes the revised interactive vertical-turbine-pump pull-down animation.
+This version refines the AVA pull-down pump animation using the supplied vertical turbine pump bowl reference.
 
-## Animation
-1. Start at the top of Home.
-2. Pull down from the top edge and hold.
-3. The shaft extends and the release cue appears.
-4. Release after the hold threshold.
-5. The shaft launches into the centre and rotates.
-6. Two pump-bowl halves enter from opposite sides and close around the shaft.
-7. The exposed assembly shows the Vesconite wear-ring / grooved-bush interface.
-8. The view tips toward a top inspection view.
-9. The shaft rotation is shown inside the grooved Vesconite bearing.
-10. The engineering view slows and fades back to AVA.
+Key changes:
+- Bowl geometry now follows the supplied reference: broad top flange, rounded/flared shoulder, cylindrical lower bowl, internal throat and central bearing region.
+- The bowl is built as a true left/right split of one common geometry, so the halves meet on the shaft centreline rather than behaving like two unrelated side panels.
+- The casing wear ring and pressed-in grooved bush are represented concentrically inside the bowl.
+- Shaft, bowl halves and bearing interface remain separate animation elements.
+- Top inspection view shows the flange, cavity, wear ring, grooved bush and rotating shaft.
+- Existing AVA application data and portfolio functionality are unchanged.
 
-The animation is implemented with inline SVG, CSS and JavaScript; it is not a prerecorded video.
-
-## Existing data
-Application data remains under the existing localStorage keys. Replace only `index.html`, `app.js`, and `style.css` when updating an existing AVA deployment.
+Test gesture: on Home, at the top of the page, pull down and hold, then release.

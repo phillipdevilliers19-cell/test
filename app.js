@@ -439,7 +439,7 @@ function calculateFreezer(){
   function setBowlPositions(x){
     // Left half enters from left. Right half mirrors the exact same geometry from right.
     left.setAttribute("transform",`translate(${x} 0)`);
-    right.setAttribute("transform",`translate(${376-x} 0) scale(-1 1)`);
+    right.setAttribute("transform",`translate(${-x} 0)`);
   }
 
   function reset(){
@@ -511,10 +511,10 @@ function calculateFreezer(){
             const sy=lerp(1,.09,e);
             const oy=lerp(38,-12,e);
             const tilt=-7*e;
-            bowl.setAttribute("transform",`translate(195 ${390+oy}) rotate(${tilt}) scale(1 ${sy}) translate(-195 -390)`);
+            bowl.setAttribute("transform",`translate(195 ${310+oy}) rotate(${tilt}) scale(1 ${sy}) translate(-195 -310)`);
             bowl.setAttribute("opacity",String(1-e*.9));
             top.setAttribute("opacity",String(e));
-            top.setAttribute("transform",`translate(195 ${390-2*e}) scale(${lerp(.58,1,e)})`);
+            top.setAttribute("transform",`translate(195 ${388-2*e}) scale(${lerp(.58,1,e)})`);
             bar.style.width=`${86+Math.round(p*7)}%`;
           },()=>{
             // 5 — top view: shaft spins slowly inside the grooved Vesconite bush.
