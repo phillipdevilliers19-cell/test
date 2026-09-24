@@ -20,6 +20,7 @@ const getOpps=()=>{try{return JSON.parse(localStorage.getItem(OPPS_KEY)||"[]")}c
 const saveOpps=a=>{localStorage.setItem(OPPS_KEY,JSON.stringify(a));renderSales();};
 const photosOf=a=>Array.isArray(a.photos)&&a.photos.length?a.photos:(a.photo?[{src:a.photo,caption:""}]:[]);
 function showPage(id){$$('.page').forEach(p=>p.classList.toggle('active',p.id===id));$$('.nav-item').forEach(b=>b.classList.toggle('active',b.dataset.page===id || (id==='app-detail'&&b.dataset.page==='library')));window.scrollTo({top:0,behavior:'smooth'});if(id==='sales')renderSales();if(id==='knowledge')renderKnowledge();}
+document.getElementById('avaHomeLogo')?.addEventListener('click',()=>showPage('home'));
 document.addEventListener('click',e=>{const p=e.target.closest('[data-page]');if(p){showPage(p.dataset.page);return}const item=e.target.closest('[data-app-id]');if(item)openDetail(item.dataset.appId);});
 function appQuality(a){let score=0;const fields=[a.description,a.original,a.why,a.environment,a.load,a.temperature,a.lubrication,a.outcome,a.problem,a.solution,a.proof];fields.forEach(v=>{if(v&&String(v).trim().length>12)score++});if(photosOf(a).length)score+=2;if(a.tags)score++;if(a.customerSummary)score++;return Math.round(score/15*100)}
 function qualityLabel(q){return q>=75?['high','Strong record']:q>=45?['medium','Needs detail']:['low','Needs evidence']}
