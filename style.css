@@ -200,3 +200,19 @@ label{color:#536164}label input,label select,label textarea{border:1px solid #cf
 .bottom-nav .nav-item{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-width:0;width:100%;padding:5px 2px 7px;line-height:1.1}
 .bottom-nav .nav-item span{line-height:1;font-size:20px;margin-bottom:4px}
 @media(max-width:760px){.topbar{height:76px;min-height:76px;padding:8px 58px}.ava-home-logo{width:164px;height:58px}.ava-home-logo img{width:158px}.topbar #backupBtn{right:16px}.bottom-nav{left:10px;right:10px;transform:none;width:auto;height:calc(70px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom)}.bottom-nav .nav-item{font-size:9px}.bottom-nav .nav-item span{font-size:18px;margin-bottom:3px}}
+
+/* v18 mobile header: keep the AVA logo permanently visible and clear of the iPhone safe-area. */
+.app-shell{padding-top:84px}
+.topbar{position:fixed;top:0;left:50%;right:auto;transform:translateX(-50%);width:min(1180px,100%);height:84px;min-height:84px;padding-top:calc(10px + env(safe-area-inset-top));padding-bottom:10px;box-sizing:border-box}
+@media(max-width:760px){
+  .app-shell{padding-top:calc(76px + env(safe-area-inset-top))}
+  .topbar{height:calc(76px + env(safe-area-inset-top));min-height:calc(76px + env(safe-area-inset-top));padding:calc(8px + env(safe-area-inset-top)) 58px 8px}
+  .ava-home-logo{top:calc(50% + env(safe-area-inset-top)/2);}
+}
+
+/* v19 — Vesconite machining image on Home */
+.hero-photo{width:min(560px,48vw);height:315px;min-width:420px;border-radius:14px;overflow:hidden;border:1px solid #d8dfdf;background:#eef1f1;box-shadow:0 12px 30px rgba(30,45,49,.10);position:relative}
+.hero-photo:after{content:"";position:absolute;inset:auto 0 0;height:42%;background:linear-gradient(to top,rgba(20,28,31,.34),transparent);pointer-events:none}
+.hero-photo img{display:block;width:100%;height:100%;object-fit:cover;object-position:center center}
+@media(max-width:900px){.hero-photo{width:46vw;min-width:320px;height:280px}}
+@media(max-width:760px){.hero-photo{width:100%;min-width:0;height:210px;margin-top:24px;border-radius:12px}.hero-photo img{object-position:center center}.hero{padding-bottom:24px}}
