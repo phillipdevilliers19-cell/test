@@ -6,14 +6,14 @@
   <meta name="theme-color" content="#ffffff">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Vesco Intelligence</title>
+  <title>AVA Internal</title>
   <link rel="stylesheet" href="style.css?v=20">
 </head>
 <body>
 <div class="app-shell">
   <header class="topbar">
-    <button class="ava-home-logo" id="avaHomeLogo" type="button" aria-label="Vesco Intelligence home">
-      <img src="vesco-intelligence-logo.png" alt="Vesco Intelligence">
+    <button class="ava-home-logo" id="avaHomeLogo" type="button" aria-label="Vesconite AVA home">
+      <img src="ava-logo.svg" alt="Vesconite AVA">
     </button>
     <button class="icon-btn" id="backupBtn" title="Backup / restore">↥</button>
   </header>
@@ -49,7 +49,6 @@
       </div>
       <div class="home-command-grid">
         <button class="quick-card" data-page="compare"><span class="q-icon">⇄</span><strong>Compare Materials</strong><small>Build a customer-ready comparison</small><b>→</b></button>
-        <button class="quick-card" data-page="sales"><span class="q-icon">◫</span><strong>Sales Opportunities</strong><small>Track customer problems and next actions</small><b>→</b></button>
         <button class="quick-card" data-page="knowledge"><span class="q-icon">⌘</span><strong>Knowledge Hub</strong><small>Technical resources and field guidance</small><b>→</b></button>
       </div>
       <div class="notice"><span>i</span><div><strong>Internal application database</strong><p>Records are stored in this browser. Use Backup / Restore to move the library between devices. Customer portfolios, comparisons and customer-view edits are temporary and never overwrite the original application.</p></div></div>
@@ -92,6 +91,7 @@
     <section id="add-app" class="page">
       <button class="back" data-page="library">← Application Library</button>
       <div class="page-title"><p class="eyebrow">CAPTURE KNOWLEDGE</p><h1>Add Application</h1><p>Record the application while the information is fresh.</p></div>
+      <button class="scraper-launch" data-page="scraper"><span>✦</span><div><strong>Import with VI Scraper</strong><small>Automatically build an application from a URL or PDF</small></div><b>→</b></button>
       <form id="appForm" class="form-card">
         <label>Application name<input required id="appName" placeholder="e.g. Vertical turbine pump — diffuser bush"></label>
         <label>Industry<select required id="appIndustry"></select></label>
@@ -123,6 +123,26 @@
       </form>
     </section>
 
+    <section id="scraper" class="page">
+      <button class="back" data-page="add-app">← Add Application</button>
+      <div class="page-title"><p class="eyebrow">AUTOMATED CAPTURE</p><h1>VI Scraper</h1><p>Paste a webpage URL or upload a PDF. VI extracts the application information and images, builds an application record, and adds it to the library.</p></div>
+      <div class="scraper-choice-grid">
+        <button class="scraper-source-card" id="scrapeUrlMode" type="button"><span class="scraper-source-icon">↗</span><strong>Web URL</strong><small>Case study, product page, project page or article</small></button>
+        <label class="scraper-source-card"><span class="scraper-source-icon">PDF</span><strong>PDF document</strong><small>Case study, brochure, report or manual</small><input id="scrapePdf" type="file" accept="application/pdf,.pdf" hidden></label>
+      </div>
+      <div class="form-card scraper-panel">
+        <div id="scrapeUrlPanel">
+          <label>Webpage URL<input id="scrapeUrl" type="url" placeholder="https://www.example.com/application-case-study"></label>
+          <button class="primary wide" id="runUrlScrape" type="button">Extract from URL →</button>
+        </div>
+        <div id="scrapePdfPanel" class="hidden">
+          <div class="scrape-file-row"><div><span class="eyebrow">PDF SELECTED</span><strong id="scrapePdfName">Choose a PDF above</strong><small id="scrapePdfStatus">VI will read the text and render useful PDF pages as application photos.</small></div><button class="secondary" id="runPdfScrape" type="button" disabled>Extract PDF →</button></div>
+        </div>
+      </div>
+      <div id="scrapeProgress" class="scrape-progress hidden"><div class="progress-spinner"></div><div><strong id="scrapeProgressTitle">Reading source…</strong><p id="scrapeProgressText">Extracting application information and images.</p></div></div>
+      <div id="scrapeResult" class="hidden"></div>
+    </section>
+
     <section id="app-detail" class="page">
       <button class="back" data-page="library">← Application Library</button>
       <div id="appDetail"></div>
@@ -132,13 +152,6 @@
       <div class="page-title"><p class="eyebrow">SALES ENABLEMENT</p><h1>Material Comparison</h1><p>Build a clean customer-facing comparison from your application evidence.</p></div>
       <div class="form-card compare-controls"><div class="two-col"><label>Original material<input id="compareOriginal" placeholder="e.g. Bronze"></label><label>Vesconite material<input id="compareVesconite" value="Vesconite / Vesconite Hilube"></label></div><label>What matters to this customer?<input id="compareFocus" placeholder="e.g. water, corrosion, wear, maintenance"></label><button class="primary wide" id="buildComparison">Build Comparison</button></div>
       <div id="comparisonOutput"></div>
-    </section>
-
-    <section id="sales" class="page">
-      <div class="page-title split"><div><p class="eyebrow">SALES PIPELINE</p><h1>Sales Opportunities</h1><p>Connect customer problems to proven Vesconite applications.</p></div><button class="primary" id="newOpportunityBtn">＋ Opportunity</button></div>
-      <div class="stats"><div class="stat"><span id="oppCount">0</span><small>Open opportunities</small></div><div class="stat"><span id="customerCount">0</span><small>Customers</small></div><div class="stat"><span id="evidenceCount">0</span><small>Evidence-rich applications</small></div></div>
-      <div id="opportunityList"></div>
-      <div id="opportunityFormWrap" class="hidden"></div>
     </section>
 
     <section id="knowledge" class="page">
@@ -204,7 +217,7 @@
     <button class="nav-item active" data-page="home"><span>⌂</span>Home</button>
     <button class="nav-item" data-page="discover"><span>◉</span>Discover</button>
     <button class="nav-item" data-page="library"><span>▣</span>Library</button>
-    <button class="nav-item" data-page="sales"><span>◫</span>Sales</button>
+    <button class="nav-item" data-page="scraper"><span>✦</span>Scraper</button>
     <button class="nav-item" data-page="add-app"><span>＋</span>Add</button>
   </nav>
 </div>

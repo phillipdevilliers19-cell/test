@@ -1,24 +1,11 @@
-# AVA Internal v13 — Application Intelligence
+# Vesco Intelligence (VI) Internal
 
-Mobile-first internal application database and sales-enablement tool for Vesconite Bearings.
+## VI Scraper
 
-## Included
-- Application database with search, industry/product/completeness filters and tag chips
-- Application quality/completeness scoring
-- Customer problem / Vesconite solution / proof fields
-- Similar application discovery
-- Temporary customer-facing application view
-- Temporary customer portfolio builder with category filtering and live editing
-- Browser print-to-PDF export from the edited portfolio
-- Material comparison builder
-- Local sales opportunity tracker linked to applications
-- Knowledge hub with official Vesconite resources
-- Multiple photos with captions
-- Local JSON backup/restore
-- Browser localStorage only; no shared backend
+The Add Application area now includes **VI Scraper**. It accepts:
+- A web URL (best-effort browser scrape, with reader fallback for pages that block direct access)
+- A PDF upload
 
-## Deployment
-Upload `index.html`, `app.js`, and `style.css` to GitHub Pages.
+The scraper extracts application text, maps it into the VI application fields, captures available webpage images, and renders useful PDF pages as application photos. The extracted record is shown for quick review/editing before it is added to the Library.
 
-
-Version 20: fixed iPhone header safe-area behavior and guaranteed Home hero image asset.
+This version still uses browser localStorage for application data. A future shared database/storage layer can replace that without changing the application UI.
